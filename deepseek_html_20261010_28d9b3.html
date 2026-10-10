@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ciné-Genesis Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f4f7fb;--p:#fff;--ink:#0b1a2b;--dim:#6b7c93;--ln:#d5deea;--a:#0a84ff;--b:#ff5a1f;--ok:#12b76a;--er:#e5383b;--m:'Share Tech Mono',monospace}
+body{font:16px/1.5 Rajdhani,system-ui,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;padding-bottom:40px}
+header{background:#fff;border-bottom:2px solid var(--ink);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.logo{font:800 20px Orbitron;letter-spacing:.06em}.logo b{color:var(--a)}
+#steps{display:flex;gap:4px;flex-wrap:wrap}
+.st{font:11px var(--m);padding:5px 9px;border:1px solid var(--ln);background:#fff;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.st.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.st.ok{color:var(--ink);border-color:var(--ink)}
+main{max-width:1000px;margin:0 auto;padding:24px 16px}
+.box{background:#fff;border:1px solid var(--ln);padding:22px;margin-bottom:18px}
+.lab{font:11px var(--m);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+h2{font:600 26px Orbitron;letter-spacing:.02em;margin-bottom:10px}h2 b{color:var(--a)}
+h3{font:600 15px Orbitron;margin-top:18px;margin-bottom:8px}
+p.sub{color:var(--dim);margin-bottom:14px;max-width:720px;font-size:15px}
+textarea,input[type=text],select{width:100%;font:13px var(--m);padding:10px;border:1px solid var(--ln);background:#f9fbfd;color:var(--ink);outline:0;margin:4px 0}
+textarea:focus,input:focus,select:focus{border-color:var(--a);background:#fff}
+textarea{resize:vertical;min-height:80px}
+button{font:600 13px var(--m);letter-spacing:.1em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;transition:.15s}
+button:hover:not(:disabled){background:var(--ink);color:#fff}
+button:disabled{opacity:.4;cursor:not-allowed}
+.big{display:block;width:100%;background:var(--a);border-color:var(--a);color:#fff;padding:20px;font-size:16px;letter-spacing:.16em;margin-top:18px}
+.big:hover:not(:disabled){background:#0066cc;border-color:#0066cc}
+.sm{padding:6px 10px;font-size:10px}
+.gc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 16px}
+.gc button.sel{background:var(--a);border-color:var(--a);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:10px}
+.cd{border:1px solid var(--ln);background:#fff;padding:10px;position:relative}
+.im{position:relative;background:#e8eef6;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px;font:11px var(--m);color:var(--dim);aspect-ratio:16/9}
+.im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sp{position:absolute;width:26px;height:26px;border:2px solid var(--a);border-top-color:transparent;border-radius:50%;animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+.rw{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.rw input{flex:1;min-width:100px;margin:0}
+.rw button{flex-shrink:0}
+.act{background:#0b1a2b;color:#bfe3ff;padding:12px 14px;margin:14px 0;font:12px/1.6 var(--m);max-height:220px;overflow:auto;border:1px solid #26405c}
+.act .ln{padding:1px 0}
+.act .ln.err{color:#ff8a8a}
+.act .ln.ok{color:#7dffb5}
+.act .ln.wr{color:#ffc477}
+.act .ln .t{color:#5b7896;margin-right:8px}
+.empty{color:var(--dim);font-style:italic;padding:10px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+#toast div{background:var(--ink);color:#fff;font:12px var(--m);padding:10px 16px;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+#pl{position:fixed;inset:0;background:#000;z-index:200;display:none;align-items:center;justify-content:center}
+#pl.on{display:flex}
+#pv,#pi{max-width:100vw;max-height:100vh}
+#sub{position:absolute;left:5%;right:5%;bottom:7%;text-align:center;color:#fff;font:600 22px/1.3 Rajdhani;text-shadow:0 2px 8px #000}
+#pl button{position:absolute;top:14px;right:14px;background:#fff;color:#000;border-color:#fff}
+.err-box{background:#fee;border:1px solid var(--er);color:#900;padding:14px;margin:10px 0;font:13px var(--m);white-space:pre-wrap}
+@media(max-width:700px){h2{font-size:20px}.st{padding:4px 6px;font-size:9px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Ciné-<b>Genesis</b> Studio</div>
+  <nav id="steps"></nav>
+</header>
+
+<main id="main"></main>
+
+<div id="toast"></div>
+<div id="pl">
+  <video id="pv" playsinline style="display:none"></video>
+  <img id="pi" alt="" style="display:none">
+  <div id="sub"></div>
+  <button onclick="stopPlay()">✕ Quitter</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   CONFIG
+   ═══════════════════════════════════════════════════════════════════ */
+var API='https://apihub.agnes-ai.com/v1',POLL='https://apihub.agnes-ai.com/agnesapi';
+var TXT=['agnes-3.0-flash','agnes-2.5-flash'],IMG='agnes-image-2.5-flash';
+var VID={free:'agnes-video-v2.0',plan:'agnes-video-2.5-flash'};
+var RPM={free:{img:10,vid:1,txt:10},plan:{img:100,vid:5,txt:600}};
+var BACK=[3,6,12,24,48,96];
+var STEPS=['Clés','Idée','Synopsis','Personnages','Scènes','Plans','Production'];
+var PAGES=['keys','brief','script','chars','scenes','shots','prod'];
+
+var GENRES=[['Fiction',[
+  "Court-métrage d'auteur|contemplative arthouse short film, natural light, 35mm grain",
+  "Drame|naturalistic drama, muted palette, intimate framing",
+  "Comédie|bright warm comedy, lively colors, wide lenses",
+  "Thriller|tense thriller, low-key lighting, cold teal tones",
+  "Horreur|atmospheric horror, deep shadows, desaturated",
+  "Science-fiction|visionary sci-fi, vast futuristic scale, clean cold light",
+  "Fantasy|epic fantasy, painterly landscapes, golden hour",
+  "Western|dusty western, anamorphic wide, sun-baked tones",
+  "Film noir|black and white film noir, hard shadows, rain",
+  "Romance|soft romantic cinema, warm bokeh, pastel light",
+  "Action|kinetic action, high contrast, motion energy",
+  "Cyberpunk|cyberpunk neon rain, dense city, magenta and cyan"
+]],['Réel',[
+  "Documentaire|observational documentary, natural light, real locations",
+  "Biopic|biographical drama, period accurate, intimate close-ups",
+  "Reportage|journalistic report, handheld, available light",
+  "Film nature|nature documentary, telephoto wildlife, majestic landscapes"
+]],['Animation',[
+  "Animation 2D|hand-drawn 2D animation, flat colors, ink outlines",
+  "Anime|japanese anime cinematic, detailed backgrounds, dramatic lighting",
+  "Stop-motion|stop-motion puppets, handmade textures, tabletop sets",
+  "Dessin animé enfants|colorful kids cartoon, rounded shapes, cheerful"
+]]];
+
+/* ═══════════════════════════════════════════════════════════════════
+   ÉTAT GLOBAL
+   ═══════════════════════════════════════════════════════════════════ */
+var db=null, mode='idb', PAGE='keys';
+var P=null, Q=null, F=1, playing=false;
+var KEYS={list:[],plan:'free'};
+var ACT={lines:[]};
+var memStore={sessions:{},config:{}};
+var LS_PREFIX='cg_v3_';
+
+/* ═══════════════════════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════════════════════ */
+function $(s){return document.querySelector(s)}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+function uid(){return Math.random().toString(36).slice(2,9)}
+function esc(s){
+  if(s==null) s='';
+  return String(s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function san(t){
+  if(t==null) t='';
+  return String(t)
+    .replace(/[\u2018\u2019]/g,"'")
+    .replace(/[\u201c\u201d\u00ab\u00bb]/g,'"')
+    .replace(/[\u2013\u2014]/g,'-')
+    .replace(/\u2026/g,'...')
+    .replace(/[\u00a0\u202f]/g,' ');
+}
+function toast(m){
+  var d=document.createElement('div');
+  d.textContent=m;
+  $('#toast').appendChild(d);
+  setTimeout(function(){d.remove()},4000);
+}
+function act(msg,type){
+  ACT.lines.push({t:new Date().toLocaleTimeString('fr-FR'),msg:msg,type:type||''});
+  if(ACT.lines.length>150) ACT.lines.shift();
+  renderAct();
+}
+function renderAct(){
+  var el=document.getElementById('act-panel');
+  if(!el) return;
+  if(!ACT.lines.length){ el.style.display='none'; return; }
+  el.style.display='block';
+  var html='<div style="color:#7fa6c8;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #26405c">ACTIVITÉ EN COURS · '+ACT.lines.length+' messages</div>';
+  var start=Math.max(0,ACT.lines.length-40);
+  for(var i=start;i<ACT.lines.length;i++){
+    var l=ACT.lines[i];
+    html+='<div class="ln '+l.type+'"><span class="t">'+l.t+'</span>'+esc(l.msg)+'</div>';
+  }
+  el.innerHTML=html;
+  el.scrollTop=el.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PERSISTANCE
+   ═══════════════════════════════════════════════════════════════════ */
+function openDB(){
+  return new Promise(function(res,rej){
+    try{
+      var r=indexedDB.open('cinegenesis_v3',1);
+      r.onerror=function(){rej(r.error)};
+      r.onsuccess=function(){res(r.result)};
+      r.onupgradeneeded=function(e){
+        var d=e.target.result;
+        if(!d.objectStoreNames.contains('sessions')) d.createObjectStore('sessions',{keyPath:'id'});
+        if(!d.objectStoreNames.contains('config')) d.createObjectStore('config',{keyPath:'key'});
+      };
+      setTimeout(function(){ if(!r.readyState||r.readyState!=='done') rej(new Error('timeout')) },2500);
+    }catch(e){rej(e)}
+  });
+}
+function dbTx(store,mode,fn){
+  return new Promise(function(res,rej){
+    try{
+      var t=db.transaction(store,mode);
+      var r=fn(t.objectStore(store));
+      r.onsuccess=function(){res(r.result)};
+      r.onerror=function(){rej(r.error)};
+    }catch(e){rej(e)}
+  });
+}
+function dbGet(store,key){
+  if(db && mode==='idb'){
+    return dbTx(store,'readonly',function(o){return o.get(key)}).catch(function(e){
+      mode='ls'; throw e;
+    });
+  }
+  try{
+    var v=localStorage.getItem(LS_PREFIX+store+'_'+key);
+    if(v!=null) return Promise.resolve(JSON.parse(v));
+  }catch(e){}
+  return Promise.resolve(memStore[store][key]);
+}
+function dbPut(store,val){
+  var key=val.key||val.id;
+  memStore[store][key]=val;
+  if(db && mode==='idb'){
+    return dbTx(store,'readwrite',function(o){return o.put(val)}).catch(function(e){mode='ls'});
+  }
+  try{ localStorage.setItem(LS_PREFIX+store+'_'+key,JSON.stringify(val)); }catch(e){}
+  return Promise.resolve();
+}
+function dbDel(store,key){
+  delete memStore[store][key];
+  if(db && mode==='idb'){
+    return dbTx(store,'readwrite',function(o){return o.delete(key)}).catch(function(e){mode='ls'});
+  }
+  try{ localStorage.removeItem(LS_PREFIX+store+'_'+key); }catch(e){}
+  return Promise.resolve();
+}
+function dbAll(store){
+  if(db && mode==='idb'){
+    return dbTx(store,'readonly',function(o){return o.getAll()}).catch(function(e){
+      mode='ls';
+      return dbAllLS(store);
+    });
+  }
+  return Promise.resolve(dbAllLS(store));
+}
+function dbAllLS(store){
+  var out={};
+  for(var k in memStore[store]) out[k]=memStore[store][k];
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var n=localStorage.key(i);
+      if(n.indexOf(LS_PREFIX+store+'_')===0){
+        var v=JSON.parse(localStorage.getItem(n));
+        out[v.key||v.id]=v;
+      }
+    }
+  }catch(e){}
+  var arr=[];
+  for(var kk in out) arr.push(out[kk]);
+  return arr;
+}
+var saveTimer=null;
+function save(){
+  if(!P) return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(function(){
+    P.upd=Date.now();
+    dbPut('sessions',P);
+  },400);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MODÈLE PROJET
+   ═══════════════════════════════════════════════════════════════════ */
+function newProject(){
+  return {
+    id:uid()+uid(),
+    created:Date.now(),
+    upd:Date.now(),
+    genre:null,
+    ratio:'16:9',
+    brief:'',
+    title:'',
+    syn:null,
+    final:'',
+    chars:[],
+    scenes:[],
+    steps:{script:'idle',chars:'idle',scenes:'idle',shots:'idle'},
+    q:{step:0,next:0,st:'idle',on:false}
+  };
+}
+function setProject(p){
+  P=p||newProject();
+  P.q=P.q||{step:0,next:0,st:'idle',on:false};
+  P.steps=P.steps||{script:'idle',chars:'idle',scenes:'idle',shots:'idle'};
+  P.chars=P.chars||[];
+  P.scenes=P.scenes||[];
+  for(var i=0;i<P.chars.length;i++) P.chars[i].busy=false;
+  for(var j=0;j<P.scenes.length;j++){
+    P.scenes[j].busy=false;
+    var sh=P.scenes[j].shots||[];
+    for(var k=0;k<sh.length;k++){
+      sh[k].busy=false;
+      if(sh[k].vst==='run' && !sh[k].task) sh[k].vst='wait';
+    }
+  }
+  Q=P.q;
+}
+function shots(){
+  var out=[];
+  for(var i=0;i<P.scenes.length;i++){
+    var s=P.scenes[i];
+    var sh=s.shots||[];
+    for(var j=0;j<sh.length;j++) out.push({h:sh[j],s:s});
+  }
+  return out;
+}
+function findItem(id){
+  if(id==='P') return {t:'p',o:P};
+  for(var i=0;i<P.chars.length;i++) if(P.chars[i].id===id) return {t:'c',o:P.chars[i]};
+  for(var j=0;j<P.scenes.length;j++){
+    var s=P.scenes[j];
+    if(s.id===id) return {t:'s',o:s};
+    var sh=s.shots||[];
+    for(var k=0;k<sh.length;k++) if(sh[k].id===id) return {t:'h',o:sh[k],s:s};
+  }
+  return null;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   API — FETCH
+   ═══════════════════════════════════════════════════════════════════ */
+function slot(kind){
+  return new Promise(function(resolve,reject){
+    function trySlot(){
+      var live=[];
+      for(var i=0;i<KEYS.list.length;i++) if(!KEYS.list[i].off) live.push(KEYS.list[i]);
+      if(!live.length){ reject(new Error('Aucune clé API active')); return; }
+      var iv=60000/RPM[KEYS.plan][kind]*1.15*F, now=Date.now();
+      var best=null, bt=Infinity;
+      for(var j=0;j<live.length;j++){
+        var o=live[j];
+        var t=Math.max(o[kind]||0, o.cool||0, now);
+        if(t<bt){bt=t;best=o}
+      }
+      if(!best){ reject(new Error('aucune clé dispo')); return; }
+      best[kind]=bt+iv;
+      if(bt>now){ setTimeout(trySlot, bt-now); return; }
+      if(best.cool>Date.now()){ setTimeout(trySlot, 500); return; }
+      resolve(best);
+    }
+    trySlot();
+  });
+}
+function apiCall(kind,url,body,tries){
+  var attempt=0;
+  function tryOnce(){
+    if(attempt>=tries) return Promise.reject(new Error('échec API après '+tries+' essais'));
+    attempt++;
+    return slot(kind).then(function(o){
+      return fetch(url,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+o.k},
+        body:JSON.stringify(body)
+      }).then(function(r){
+        if(r.ok){ o.bad=0; F=Math.max(1,F*0.97); return r; }
+        return r.text().then(function(t){
+          t=t.slice(0,180);
+          if(r.status===429){
+            var ra=parseInt(r.headers.get('Retry-After')||'25',10);
+            o.cool=Date.now()+ra*1000;
+            F=Math.min(4,F*1.5);
+            return sleep(1500).then(tryOnce);
+          }
+          if(r.status===401||r.status===402||r.status===403){
+            o.bad=(o.bad||0)+1;
+            if(o.bad>=2){ o.off=true; toast('Clé désactivée : '+o.k.slice(-4)); }
+            return sleep(1000).then(tryOnce);
+          }
+          if(r.status>=500||r.status===408){
+            return sleep(2000*Math.pow(2,attempt-1)).then(tryOnce);
+          }
+          throw new Error('HTTP '+r.status+' — '+t);
+        });
+      }).catch(function(e){
+        if(e.message && e.message.indexOf('HTTP 4')===0) throw e;
+        return sleep(1500*attempt).then(tryOnce);
+      });
+    });
+  }
+  return tryOnce();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PARSER JSON
+   ═══════════════════════════════════════════════════════════════════ */
+function parseJson(txt){
+  if(!txt) return null;
+  var c=String(txt).replace(/```json/g,'').replace(/```/g,'');
+  var a=c.indexOf('{'), b=c.lastIndexOf('}');
+  if(a<0||b<0) return null;
+  c=c.slice(a,b+1);
+  try{ return JSON.parse(c); }catch(e){}
+  // Repair : échappe les sauts de ligne dans les chaînes
+  var out='', inStr=false, esc2=false;
+  for(var i=0;i<c.length;i++){
+    var ch=c[i];
+    if(esc2){ out+=ch; esc2=false; continue; }
+    if(ch==='\\'){ out+=ch; esc2=true; continue; }
+    if(ch==='"'){ inStr=!inStr; out+=ch; continue; }
+    if(inStr){
+      if(ch==='\n'){ out+='\\n'; continue; }
+      if(ch==='\r'){ continue; }
+      if(ch.charCodeAt(0)<32){ out+=' '; continue; }
+    }
+    out+=ch;
+  }
+  out=out.replace(/,\s*([}\]])/g,'$1');
+  try{ return JSON.parse(out); }catch(e){ return null; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   IA
+   ═══════════════════════════════════════════════════════════════════ */
+function chatAI(sys,user,max,temp,imgs){
+  var messages=[
+    {role:'system',content:sys},
+    {role:'user',content: imgs&&imgs.length ? [{type:'text',text:user}].concat(imgs.map(function(u){return {type:'image_url',image_url:{url:u}}})) : user }
+  ];
+  function tryModel(idx){
+    if(idx>=TXT.length) return Promise.reject(new Error('IA indisponible'));
+    var m=TXT[idx];
+    return apiCall('txt',API+'/chat/completions',{
+      model:m, messages:messages, temperature:temp, max_tokens:max,
+      chat_template_kwargs:{enable_thinking:false}
+    },3).then(function(r){
+      return r.json().then(function(d){
+        var c=d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
+        if(c) return c;
+        return tryModel(idx+1);
+      });
+    }).catch(function(e){
+      act('Erreur texte : '+e.message,'wr');
+      return tryModel(idx+1);
+    });
+  }
+  return tryModel(0);
+}
+function aiJson(sys,user,max,temp,imgs){
+  return chatAI(sys+' Réponds UNIQUEMENT en JSON valide, sans texte autour.',user,max,temp,imgs).then(function(txt){
+    var j=parseJson(txt);
+    if(j) return j;
+    // 2ème essai
+    return chatAI(sys+' Réponds UNIQUEMENT en JSON valide.',user,max,temp,imgs).then(function(txt2){
+      var j2=parseJson(txt2);
+      if(j2) return j2;
+      throw new Error('Réponse IA illisible');
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   IMAGES
+   ═══════════════════════════════════════════════════════════════════ */
+function urlToData(u){
+  return new Promise(function(res){
+    if(!u) return res(null);
+    if(u.indexOf('data:')===0) return res(u);
+    fetch(u).then(function(r){return r.blob()}).then(function(b){
+      var o=URL.createObjectURL(b);
+      var im=new Image();
+      im.onload=function(){
+        var s=Math.min(1,1024/Math.max(im.width,im.height));
+        var c=document.createElement('canvas');
+        c.width=Math.round(im.width*s); c.height=Math.round(im.height*s);
+        c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+        URL.revokeObjectURL(o);
+        res(c.toDataURL('image/jpeg',0.86));
+      };
+      im.onerror=function(){res(null)};
+      im.src=o;
+    }).catch(function(){res(null)});
+  });
+}
+function makeImage(prompt,refs,ratio){
+  var body={model:IMG,prompt:san(prompt),n:1,size:'1K',ratio:ratio||P.ratio,extra_body:{response_format:'url'}};
+  if(refs && refs.length){ body.extra_body.image=refs.slice(0,4); }
+  return apiCall('img',API+'/images/generations',body,3).then(function(r){
+    return r.json().then(function(d){
+      var it=d.data && d.data[0];
+      var u=it && (it.url || (it.b64_json && 'data:image/png;base64,'+it.b64_json));
+      if(!u) throw new Error('pas d\'image reçue');
+      return urlToData(u).then(function(dd){ return {u:u,d:dd}; });
+    });
+  });
+}
+function fileToImage(f,maxSide){
+  return new Promise(function(res){
+    var fr=new FileReader();
+    fr.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        var s=Math.min(1,maxSide/Math.max(im.width,im.height));
+        var c=document.createElement('canvas');
+        c.width=Math.round(im.width*s); c.height=Math.round(im.height*s);
+        c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+        var d=c.toDataURL('image/jpeg',0.88);
+        res({u:d,d:d});
+      };
+      im.onerror=function(){res(null)};
+      im.src=fr.result;
+    };
+    fr.readAsDataURL(f);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HELPERS MÉTIER
+   ═══════════════════════════════════════════════════════════════════ */
+function charsSheet(names){
+  if(!names) return '';
+  var out=[];
+  for(var i=0;i<P.chars.length;i++){
+    var c=P.chars[i];
+    if(names.indexOf(c.name)>=0){
+      out.push(c.name+': '+c.desc+', wearing '+c.outfit);
+    }
+  }
+  return out.join('; ');
+}
+function charsRefs(names){
+  if(!names) return [];
+  var out=[];
+  for(var i=0;i<P.chars.length;i++){
+    var c=P.chars[i];
+    if(names.indexOf(c.name)>=0 && c.img){
+      out.push(c.img.d||c.img.u);
+      if(out.length>=3) break;
+    }
+  }
+  return out;
+}
+function stylePrefix(){ return P.genre ? P.genre.style : 'cinematic'; }
+function aspectRatio(){ return (P.ratio||'16:9').replace(':','/'); }
+function imgRef(img){ return img && (img.d||img.u); }
+
+function buildPrompt(f){
+  var o=f.o;
+  if(f.t==='c'){
+    return {
+      p:'Full-body character reference, plain neutral background, '+stylePrefix()+'. '+o.name+': '+o.desc+'. Wearing: '+o.outfit+'. No text, no watermark.',
+      refs:[], ratio:'9:16'
+    };
+  }
+  if(f.t==='s'){
+    var sheet=charsSheet(o.chars);
+    return {
+      p:'Cinematic establishing frame. '+stylePrefix()+'. Setting: '+o.decor+'. Mood: '+o.mood+'. '+(sheet?'Characters present (identical to references): '+sheet+'.':'')+' No text, no watermark.',
+      refs:charsRefs(o.chars), ratio:P.ratio
+    };
+  }
+  // shot
+  var sh=charsSheet(o.chars);
+  return {
+    p:'Cinematic film still, '+(o.size||'medium')+' shot. '+stylePrefix()+'. Setting: '+f.s.decor+'. Action: '+o.action+'. Camera: '+o.camera+'. Characters (identical face, hair, outfit): '+(sh||'none')+'. No text, no watermark.',
+    refs:charsRefs(o.chars).concat(f.s.img?[imgRef(f.s.img)]:[]).filter(Boolean),
+    ratio:P.ratio
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GÉNÉRATION D'IMAGE
+   ═══════════════════════════════════════════════════════════════════ */
+function genImage(id,promptMod){
+  var f=findItem(id);
+  if(!f || f.o.busy) return Promise.resolve();
+  var o=f.o; o.busy=true; refreshCard(id);
+  var lbl=o.name||o.title||(o.action&&o.action.slice(0,40))||'image';
+  act((promptMod?'Modification image · ':'Génération image · ')+lbl);
+  return (function(){
+    var q=buildPrompt(f);
+    var p=q.p, refs=q.refs;
+    if(promptMod && o.img){
+      refs=[imgRef(o.img)].concat(refs);
+      p+=' Edit the first reference image: '+promptMod+'. Keep the same subject, identity, composition and everything else identical.';
+    } else if(promptMod){
+      p+=' '+promptMod+'.';
+    }
+    return makeImage(p,refs,q.ratio);
+  })().then(function(res){
+    o.img=res;
+    act('✓ Image prête · '+lbl,'ok');
+  }).catch(function(e){
+    act('✗ Image : '+e.message,'err');
+    toast('Image : '+e.message);
+  }).then(function(){
+    o.busy=false;
+    refreshCard(id);
+    save();
+  });
+}
+function genMissingImages(items){
+  var todo=[];
+  for(var i=0;i<items.length;i++) if(!items[i].o.img) todo.push(items[i]);
+  if(!todo.length) return Promise.resolve();
+  act('Génération de '+todo.length+' image(s) en parallèle…');
+  var promises=[];
+  for(var j=0;j<todo.length;j++){
+    promises.push(genImage(todo[j].o.id).catch(function(){}));
+  }
+  return Promise.all(promises);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FONCTIONS IA MÉTIER
+   ═══════════════════════════════════════════════════════════════════ */
+function aiScript(){
+  act('✍️ Requête synopsis envoyée…');
+  var ctx='Genre : '+P.genre.name+' ('+P.genre.style+').';
+  return aiJson(
+    "Script doctor et scénariste de films d'auteur.",
+    ctx+"\nIdée de l'auteur :\n\"\"\""+P.brief+"\"\"\"\n\nRéponds : {\"title\":\"titre\",\"base\":\"réécriture fidèle en 5-8 phrases français\",\"suggestions\":[\"10 alternatives 3-5 phrases chacune\"]}",
+    4500, 0.8
+  ).then(function(j){
+    if(!j.base || !j.suggestions) throw new Error('format inattendu');
+    P.title=P.title||String(j.title||'');
+    P.syn={base:String(j.base),sugg:j.suggestions.slice(0,10).map(String),sel:[]};
+    P.final=String(j.base);
+    act('✓ Synopsis généré : "'+P.title+'"','ok');
+  });
+}
+function aiChars(){
+  act('🎭 Requête casting…');
+  var ctx='Genre : '+P.genre.name+'.';
+  return aiJson(
+    'Directeur de casting.',
+    ctx+'\nTitre : '+P.title+'\nSynopsis :\n'+P.final+'\n\nPropose 3 à 6 personnages.\n{"characters":[{"name":"","role":"rôle français","desc":"English physical description","outfit":"English costume"}]}',
+    3500, 0.7
+  ).then(function(j){
+    var cs=j.characters||[];
+    if(!cs.length) throw new Error('aucun personnage');
+    for(var i=0;i<cs.length;i++){
+      var c=cs[i];
+      P.chars.push({
+        id:uid(), name:String(c.name||'?'), role:String(c.role||''),
+        desc:String(c.desc||''), outfit:String(c.outfit||''),
+        img:null, busy:false
+      });
+    }
+    act('✓ '+cs.length+' personnages proposés','ok');
+  });
+}
+function aiScenes(n){
+  act('🎬 Requête découpage en scènes…');
+  var ctx='Genre : '+P.genre.name+'.';
+  var chs=[];
+  for(var i=0;i<P.chars.length;i++) chs.push(P.chars[i].name+' : '+P.chars[i].role);
+  return aiJson(
+    'Scénariste de cinéma. Dialogues naturels en français, pas de musique.',
+    ctx+'\nTitre : '+P.title+'\nSynopsis :\n'+P.final+'\nPersonnages :\n'+chs.join('\n')+'\n\nÉcris exactement '+n+' scènes.\n{"scenes":[{"title":"","summary":"2-3 phrases FR","decor":"English place","mood":"English mood","chars":["noms"],"dialogue":[{"who":"","line":"courte réplique FR"}]}]}',
+    7000, 0.75
+  ).then(function(j){
+    var sc=j.scenes||[];
+    if(!sc.length) throw new Error('aucune scène');
+    var out=[];
+    for(var i=0;i<sc.length;i++){
+      var s=sc[i];
+      var dlg=(s.dialogue||[]).map(function(d){return (d.who||'')+': '+(d.line||'')}).join('\n');
+      out.push({
+        id:uid(),
+        title:String(s.title||''),
+        summary:String(s.summary||''),
+        decor:String(s.decor||''),
+        mood:String(s.mood||''),
+        chars:Array.isArray(s.chars)?s.chars.map(String):[],
+        dialogue:dlg,
+        img:null, busy:false, shots:[]
+      });
+    }
+    P.scenes=out;
+    act('✓ '+sc.length+' scènes écrites','ok');
+  });
+}
+function aiShots(s){
+  act('🎞️ Découpage de "'+s.title+'"…');
+  var ctx='Genre : '+P.genre.name+'.';
+  return aiJson(
+    'Réalisateur et chef opérateur.',
+    ctx+'\nScène : '+s.title+'. '+s.summary+'\nDécor : '+s.decor+'\nAmbiance : '+s.mood+'\nPersonnages : '+s.chars.join(', ')+'\nDialogues :\n'+s.dialogue+'\n\n3 à 5 plans de 8-10 secondes.\n{"shots":[{"size":"wide|medium|close-up","camera":"English camera move","action":"English action","chars":["noms"],"who":"","line":"réplique FR ou vide"}]}',
+    3500, 0.7
+  ).then(function(j){
+    var a=j.shots||[];
+    if(!a.length) throw new Error('aucun plan');
+    var out=[];
+    for(var i=0;i<a.length;i++){
+      var h=a[i];
+      out.push({
+        id:uid(),
+        size:String(h.size||'medium'),
+        camera:String(h.camera||'static'),
+        action:String(h.action||''),
+        chars:Array.isArray(h.chars)?h.chars.map(String):[],
+        who:String(h.who||''),
+        line:String(h.line||''),
+        img:null, busy:false, vst:'wait'
+      });
+    }
+    s.shots=out;
+    act('✓ '+a.length+' plans pour "'+s.title+'"','ok');
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PIPELINES
+   ═══════════════════════════════════════════════════════════════════ */
+function runScript(){
+  if(P.steps.script==='done') return Promise.resolve();
+  P.steps.script='running'; save();
+  if(PAGE==='script') render();
+  return aiScript().then(function(){
+    P.steps.script='done'; save();
+    if(PAGE==='script') render();
+  }).catch(function(e){
+    act('✗ Synopsis : '+e.message,'err');
+    P.steps.script='idle';
+    if(PAGE==='script') render();
+    throw e;
+  });
+}
+function runChars(){
+  if(P.steps.chars==='done') return Promise.resolve();
+  P.steps.chars='running'; save();
+  if(PAGE==='chars') render();
+  var promise;
+  if(!P.chars.length) promise=aiChars();
+  else promise=Promise.resolve();
+  return promise.then(function(){
+    if(PAGE==='chars') render();
+    act('🖼️ Génération des images de personnages…');
+    return genMissingImages(P.chars.map(function(o){return {o:o}}));
+  }).then(function(){
+    P.steps.chars='done'; save();
+    if(PAGE==='chars') render();
+    act('✓ Casting prêt','ok');
+  }).catch(function(e){
+    act('✗ Casting : '+e.message,'err');
+    P.steps.chars='idle';
+    if(PAGE==='chars') render();
+    throw e;
+  });
+}
+function runScenes(){
+  if(P.steps.scenes==='done') return Promise.resolve();
+  P.steps.scenes='running'; save();
+  if(PAGE==='scenes') render();
+  var promise;
+  if(!P.scenes.length) promise=aiScenes(5);
+  else promise=Promise.resolve();
+  return promise.then(function(){
+    if(PAGE==='scenes') render();
+    act('🖼️ Génération des images de scènes…');
+    return genMissingImages(P.scenes.map(function(o){return {o:o}}));
+  }).then(function(){
+    P.steps.scenes='done'; save();
+    if(PAGE==='scenes') render();
+    act('✓ Scènes prêtes','ok');
+  }).catch(function(e){
+    act('✗ Scènes : '+e.message,'err');
+    P.steps.scenes='idle';
+    if(PAGE==='scenes') render();
+    throw e;
+  });
+}
+function runShots(){
+  if(P.steps.shots==='done') return Promise.resolve();
+  P.steps.shots='running'; save();
+  if(PAGE==='shots') render();
+  var scenesToCut=[];
+  for(var i=0;i<P.scenes.length;i++){
+    if(!(P.scenes[i].shots && P.scenes[i].shots.length)) scenesToCut.push(P.scenes[i]);
+  }
+  // Coupe séquentiellement
+  var p=Promise.resolve();
+  scenesToCut.forEach(function(s){
+    p=p.then(function(){
+      return aiShots(s).catch(function(e){ act('✗ "'+s.title+'" : '+e.message,'err'); });
+    }).then(function(){
+      if(PAGE==='shots') render();
+    });
+  });
+  return p.then(function(){
+    act('🖼️ Génération des images de plans…');
+    return genMissingImages(shots().map(function(x){return {o:x.h}}));
+  }).then(function(){
+    P.steps.shots='done'; save();
+    if(PAGE==='shots') render();
+    act('✓ Tous les plans prêts','ok');
+  }).catch(function(e){
+    act('✗ Plans : '+e.message,'err');
+    P.steps.shots='idle';
+    if(PAGE==='shots') render();
+    throw e;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LANCEMENT COMPLET (bouton ⚡ de l'étape 2)
+   ═══════════════════════════════════════════════════════════════════ */
+function launchAll(){
+  act('⚡ Lancement de la génération automatique complète…','ok');
+  act('Genre : '+P.genre.name+' · Format : '+P.ratio);
+  var nKeys=0;
+  for(var i=0;i<KEYS.list.length;i++) if(!KEYS.list[i].off) nKeys++;
+  act('Clés actives : '+nKeys);
+
+  go('script');
+
+  return runScript().then(function(){
+    go('chars');
+    return runChars();
+  }).then(function(){
+    go('scenes');
+    return runScenes();
+  }).then(function(){
+    go('shots');
+    return runShots();
+  }).then(function(){
+    act('✅ Génération complète terminée. Lancez la production vidéo.','ok');
+    go('prod');
+    toast('Film généré. Lancez la production vidéo.');
+  }).catch(function(e){
+    act('✗ Erreur : '+e.message,'err');
+    toast('Erreur : '+e.message);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PRODUCTION VIDÉO
+   ═══════════════════════════════════════════════════════════════════ */
+function fmtTime(s){
+  s=Math.max(0,Math.round(s));
+  return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2);
+}
+function videoPromptFor(h,s){
+  var line=h.line?h.who+' dit en français, lèvres synchronisées : "'+h.line+'".':'Pas de dialogue.';
+  return san(stylePrefix()+'. '+h.action+'. Caméra : '+h.camera+'. Décor : '+s.decor+'. '+line+' Sons ambiants réalistes uniquement, pas de musique, pas de sous-titres. Garde l\'identité, le costume et le style de la première image.');
+}
+function videoDims(){
+  if(P.ratio==='9:16') return [480,854];
+  if(P.ratio==='1:1') return [640,640];
+  return [854,480];
+}
+function scheduleRetry(){
+  Q.st='full';
+  var mins=BACK[Q.step];
+  Q.next=Date.now()+mins*60000;
+  act('⏸ File Agnès saturée → retest dans '+mins+' min','wr');
+  toast('File saturée — retest dans '+mins+' min');
+  Q.step=Math.min(Q.step+1,BACK.length-1);
+  save();
+}
+function launchVideo(h,s){
+  return slot('vid').then(function(keyObj){
+    var free=KEYS.plan==='free';
+    var firstFrame=h.img.u.indexOf('data:')===0 ? h.img.u : (h.img.d||h.img.u);
+    var dims=videoDims();
+    var body;
+    if(free){
+      body={model:VID.free,prompt:videoPromptFor(h,s),num_frames:97,frame_rate:12,width:dims[0],height:dims[1],image:firstFrame};
+    } else {
+      body={model:VID.plan,prompt:videoPromptFor(h,s),seconds:'10',mode:'keyframe',size:'720P',aspect_ratio:P.ratio,first_frame:firstFrame};
+    }
+    h.vst='run'; h.msg='envoi…'; h.err='';
+    refreshCard(h.id);
+
+    return fetch(API+'/videos',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+keyObj.k},
+      body:JSON.stringify(body)
+    }).then(function(r){
+      if(r.status===503){
+        act('503 file saturée','wr');
+        h.vst='wait'; refreshCard(h.id);
+        scheduleRetry();
+        return;
+      }
+      if(r.status===429){
+        keyObj.cool=Date.now()+(parseInt(r.headers.get('Retry-After')||'30',10))*1000;
+        h.vst='wait'; refreshCard(h.id);
+        return;
+      }
+      if(!r.ok){
+        return r.text().then(function(t){
+          if([401,402,403].indexOf(r.status)>=0){
+            keyObj.bad=(keyObj.bad||0)+1;
+            if(keyObj.bad>=2) keyObj.off=true;
+          }
+          h.vst='er'; h.err='HTTP '+r.status+' '+t.slice(0,120);
+          act('✗ Vidéo : '+h.err,'err');
+          refreshCard(h.id);
+        });
+      }
+      return r.json().then(function(d){
+        var id=d.video_id||d.id||d.task_id||(d.data&&(d.data.video_id||d.data.id));
+        if(!id){ h.vst='er'; h.err='pas de video_id'; refreshCard(h.id); return; }
+        var inner=null;
+        if(id.indexOf('video_')===0){
+          try{
+            var b=id.slice(6);
+            while(b.length%4) b+='=';
+            var dec=atob(b);
+            var m=dec.match(/video_id:([^;]+)/);
+            if(m) inner=m[1].trim();
+          }catch(e){}
+        }
+        h.task={id:id,inner:inner,k:keyObj.k};
+        Q.st='run'; Q.step=0;
+        act('✓ Vidéo envoyée (clé …'+keyObj.k.slice(-4)+')','ok');
+        save();
+        pollVideo(h);
+      });
+    }).catch(function(e){
+      h.vst='wait'; Q.next=Date.now()+30000;
+      act('⚠️ Réseau : '+e.message,'wr');
+      refreshCard(h.id);
+    });
+  });
+}
+function pollVideo(h){
+  var t=h.task;
+  var model=VID[KEYS.plan];
+  var endTime=Date.now()+30*60000;
+  var n=0, miss=0;
+  function step(){
+    if(Date.now()>endTime){ h.vst='er'; h.err='délai dépassé'; refreshCard(h.id); return; }
+    if(h.vst!=='run') return;
+    var ids=[t.id];
+    if(t.inner && t.inner!==t.id) ids.push(t.inner);
+    var iv=Math.min(20000, 6000+n*1500);
+    n++;
+    var found=null;
+    var idx=0;
+    function tryOne(){
+      if(idx>=ids.length){
+        if(found){ afterPoll(found); }
+        else {
+          miss++;
+          if(miss>20){ h.vst='er'; h.err='suivi impossible'; refreshCard(h.id); return; }
+          setTimeout(step, iv);
+        }
+        return;
+      }
+      var iid=ids[idx]; idx++;
+      fetch(POLL+'?video_id='+encodeURIComponent(iid)+'&model_name='+encodeURIComponent(model),{
+        headers:{'Authorization':'Bearer '+t.k}
+      }).then(function(r){
+        if(!r.ok){ miss++; tryOne(); return; }
+        return r.json().then(function(d){ found=d; afterPoll(d); });
+      }).catch(function(){ miss++; tryOne(); });
+    }
+    function afterPoll(d){
+      var s=String(d.status||d.state||'').toLowerCase();
+      h.msg=d.progress?d.progress+'%':s;
+      refreshCard(h.id);
+      if(['completed','succeeded','done','success','finished','ready'].indexOf(s)>=0){
+        var u=(d.metadata&&(d.metadata.url||d.metadata.video_url))||(d.output&&(d.output.url||d.output.video_url))||(d.data&&(d.data.url||d.data.video_url))||d.url||d.video_url;
+        if(!u){ h.vst='er'; h.err='pas d\'URL'; refreshCard(h.id); return; }
+        h.video=u; h.vst='ok'; h.seen=false; h.err='';
+        act('✓ Vidéo prête','ok');
+        toast('🎬 Nouvelle vidéo prête');
+        save(); refreshCard(h.id);
+        return;
+      }
+      if(['failed','error','cancelled','canceled','rejected'].indexOf(s)>=0){
+        h.vst='er'; h.err=String((d.error&&d.error.message)||d.error||'échec').slice(0,100);
+        act('✗ Vidéo : '+h.err,'err');
+        refreshCard(h.id);
+        return;
+      }
+      setTimeout(step, iv);
+    }
+    tryOne();
+  }
+  // Première attente
+  setTimeout(step, KEYS.plan==='free'?30000:8000);
+}
+// Loop de file d'attente
+setInterval(function(){
+  if(!P || !Q.on || !Q.busy) return;
+  if(Date.now()<Q.next) return;
+  var a=shots();
+  var todo=[];
+  var runCount=0;
+  for(var i=0;i<a.length;i++){
+    if(a[i].h.vst==='wait' && a[i].h.img) todo.push(a[i]);
+    if(a[i].h.vst==='run') runCount++;
+  }
+  var liveKeys=0;
+  for(var k=0;k<KEYS.list.length;k++) if(!KEYS.list[k].off) liveKeys++;
+  if(!todo.length){
+    if(!runCount){ Q.on=false; Q.st='idle'; save(); }
+    return;
+  }
+  if(runCount>=Math.max(2,liveKeys*3)) return;
+  Q.busy=true;
+  var next=todo[0];
+  launchVideo(next.h,next.s).then(function(){
+    Q.busy=false;
+  }).catch(function(e){
+    act('✗ File : '+e.message,'err');
+    Q.on=false; Q.st='paused';
+    Q.busy=false;
+  });
+},1500);
+
+/* ═══════════════════════════════════════════════════════════════════
+   LECTEUR
+   ═══════════════════════════════════════════════════════════════════ */
+function speak(txt){
+  if(!txt || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(txt);
+  u.lang='fr-FR';
+  speechSynthesis.speak(u);
+}
+function playFilm(){
+  var all=shots();
+  var list=[];
+  for(var i=0;i<all.length;i++) if(all[i].h.video||all[i].h.img) list.push(all[i]);
+  if(!list.length){ toast('Rien à lire pour l\'instant'); return; }
+  playing=true;
+  document.getElementById('pl').classList.add('on');
+  var v=document.getElementById('pv'), im=document.getElementById('pi'), sub=document.getElementById('sub');
+  var i=0;
+  function next(){
+    if(!playing){ stopPlay(); return; }
+    if(i>=list.length){ stopPlay(); save(); return; }
+    var h=list[i].h; i++;
+    sub.textContent=h.line?(h.who?h.who+' : ':'')+h.line:'';
+    if(h.video){
+      im.style.display='none'; v.style.display='block'; v.src=h.video;
+      v.onended=function(){ h.seen=true; next(); };
+      v.onerror=function(){ h.seen=true; next(); };
+      v.play().catch(function(){ next(); });
+    } else {
+      v.style.display='none'; im.style.display='block'; im.src=imgRef(h.img);
+      speak(h.line);
+      setTimeout(next, Math.max(3500,(h.line||'').length*75));
+    }
+  }
+  next();
+}
+function stopPlay(){
+  playing=false;
+  var v=document.getElementById('pv');
+  try{ v.pause(); }catch(e){}
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  document.getElementById('pl').classList.remove('on');
+  if(PAGE==='prod') render();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RENDU DES CARTES (images, personnages, scènes, plans)
+   ═══════════════════════════════════════════════════════════════════ */
+function imBoxHtml(o,ratio){
+  var ar=ratio||aspectRatio();
+  var inner = o.img ? '<img src="'+esc(imgRef(o.img))+'" alt="">' : '<span>aucune image</span>';
+  if(o.busy) inner+='<i class="sp"></i>';
+  return '<div class="im" style="aspect-ratio:'+ar+'">'+inner+'</div>';
+}
+function imCtlHtml(o){
+  var dis1=o.busy?'disabled':'';
+  var dis2=(o.busy||!o.img)?'disabled':'';
+  var label=o.img?'↺ Régénérer':'⚡ Générer';
+  return '<div class="rw">'+
+    '<button class="sm" onclick="act(\'gen\',\''+o.id+'\')" '+dis1+'>'+label+'</button>'+
+    '<label class="sm" style="cursor:pointer;border:1px solid var(--ink);padding:6px 10px;font:600 10px var(--m);text-transform:uppercase">📷 Importer<input type="file" accept="image/*" style="display:none" onchange="actUpload(event,\''+o.id+'\')"></label>'+
+    '</div>'+
+    '<div class="rw">'+
+    '<input type="text" placeholder="Modifier par prompt…" id="mod-'+o.id+'">'+
+    '<button class="sm" onclick="actMod(\''+o.id+'\')" '+dis2+' title="Utilise l\'image actuelle comme référence">✨ Appliquer</button>'+
+    '</div>';
+}
+function fieldHtml(o,field,label,rows){
+  var v=esc(o[field]||'');
+  var attrs='data-f="'+field+'" data-id="'+o.id+'"';
+  if(rows){
+    return '<label style="display:block;margin:8px 0"><div class="lab">'+label+'</div><textarea rows="'+rows+'" '+attrs+'>'+v+'</textarea></label>';
+  }
+  return '<label style="display:block;margin:8px 0"><div class="lab">'+label+'</div><input type="text" '+attrs+' value="'+v+'"></label>';
+}
+function charsField(o,label){
+  return '<label style="display:block;margin:8px 0"><div class="lab">'+label+'</div><input type="text" data-f="chars" data-arr="1" data-id="'+o.id+'" value="'+esc((o.chars||[]).join(', '))+'"></label>';
+}
+function charCardHtml(c){
+  return '<div class="cd" id="c-'+c.id+'">'+
+    imBoxHtml(c,'3/4')+
+    fieldHtml(c,'name','Nom')+
+    fieldHtml(c,'role','Rôle')+
+    fieldHtml(c,'desc','Fiche physique (anglais)',3)+
+    fieldHtml(c,'outfit','Costume (anglais)',2)+
+    imCtlHtml(c)+
+    '<div class="rw"><button class="sm" onclick="act(\'del\',\''+c.id+'\')">Supprimer</button></div>'+
+    '</div>';
+}
+function sceneCardHtml(s,idx){
+  return '<div class="cd" id="c-'+s.id+'">'+
+    '<div class="lab">Scène '+(idx+1)+'</div>'+
+    imBoxHtml(s)+
+    fieldHtml(s,'title','Titre')+
+    fieldHtml(s,'summary','Résumé',3)+
+    fieldHtml(s,'decor','Décor (anglais)',2)+
+    fieldHtml(s,'mood','Ambiance (anglais)')+
+    charsField(s,'Personnages présents')+
+    fieldHtml(s,'dialogue','Dialogues (NOM: réplique)',4)+
+    imCtlHtml(s)+
+    '<div class="rw"><button class="sm" onclick="act(\'del\',\''+s.id+'\')">Supprimer</button></div>'+
+    '</div>';
+}
+function shotCardHtml(h){
+  return '<div class="cd" id="c-'+h.id+'">'+
+    imBoxHtml(h)+
+    fieldHtml(h,'size','Plan (wide, medium, close-up…)')+
+    fieldHtml(h,'action','Action visuelle (anglais)',3)+
+    fieldHtml(h,'camera','Caméra (anglais)')+
+    charsField(h,'Personnages dans le plan')+
+    fieldHtml(h,'who','Qui parle')+
+    fieldHtml(h,'line','Réplique dite (français)',2)+
+    imCtlHtml(h)+
+    '<div class="rw"><button class="sm" onclick="act(\'del\',\''+h.id+'\')">Supprimer</button></div>'+
+    '</div>';
+}
+function refreshCard(id){
+  var f=findItem(id);
+  if(!f) return;
+  var el=document.getElementById('c-'+id);
+  if(el){
+    var html;
+    if(f.t==='c') html=charCardHtml(f.o);
+    else if(f.t==='s') html=sceneCardHtml(f.o,P.scenes.indexOf(f.o));
+    else html=shotCardHtml(f.o);
+    var tmp=document.createElement('div');
+    tmp.innerHTML=html;
+    el.parentNode.replaceChild(tmp.firstChild,el);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGES
+   ═══════════════════════════════════════════════════════════════════ */
+function pageKeys(){
+  return '<div class="box">'+
+    '<div class="lab">ÉTAPE 1 SUR 7</div>'+
+    '<h2>Vos clés API <b>Agnès</b></h2>'+
+    '<p class="sub">Collez une clé par ligne (format <code>sk-…</code>). Plus vous avez de clés, plus les images et vidéos sont générées en parallèle. Elles restent enregistrées dans ce navigateur.</p>'+
+    '<textarea id="keys" rows="6" spellcheck="false" placeholder="sk-…&#10;sk-…">'+esc(KEYS.list.map(function(k){return k.k}).join('\n'))+'</textarea>'+
+    '<label style="display:block;margin-top:12px"><div class="lab">Type de clés</div>'+
+    '<select id="plan">'+
+    '<option value="free"'+(KEYS.plan==='free'?' selected':'')+'>Gratuites — vidéo 12 fps</option>'+
+    '<option value="plan"'+(KEYS.plan==='plan'?' selected':'')+'>Payantes (Token Plan) — vidéo 720P</option>'+
+    '</select></label>'+
+    '<p class="sub" style="margin-top:16px;font-size:14px;color:var(--ink)"><b>Où obtenir une clé gratuite ?</b><br>Sur <a href="https://platform.agnes-ai.com" target="_blank">platform.agnes-ai.com</a> → Settings → API Keys</p>'+
+    '<button class="big" onclick="act(\'savekeys\')">✓ Valider et passer à l\'étape 2 →</button>'+
+    '</div>';
+}
+function pageBrief(){
+  var html='<div class="box">'+
+    '<div class="lab">ÉTAPE 2 SUR 7</div>'+
+    '<h2>Quel <b>type de film</b> ?</h2>'+
+    '<p class="sub">Le genre fixe le style visuel de toutes les images et vidéos.</p>';
+  for(var i=0;i<GENRES.length;i++){
+    var cat=GENRES[i][0], list=GENRES[i][1];
+    html+='<div class="lab">'+cat+'</div><div class="gc">';
+    for(var j=0;j<list.length;j++){
+      var parts=list[j].split('|');
+      var sel=(P.genre && P.genre.name===parts[0]) ? ' sel' : '';
+      html+='<button class="'+sel.trim()+'" onclick="pickGenre(\''+esc(parts[0])+'\',\''+esc(parts[1])+'\')">'+esc(parts[0])+'</button>';
+    }
+    html+='</div>';
+  }
+  html+='<div class="lab">Format de l\'image</div><div class="gc">';
+  var ratios=['16:9','9:16','1:1'];
+  for(var r=0;r<ratios.length;r++){
+    var rr=ratios[r];
+    html+='<button class="'+(P.ratio===rr?'sel':'')+'" onclick="pickRatio(\''+rr+'\')">'+rr+'</button>';
+  }
+  html+='</div>';
+  html+='<div style="margin-top:22px">'+
+    '<div class="lab">Votre idée</div>'+
+    '<textarea id="brief" rows="6" placeholder="Exemple : Un vieux projectionniste découvre une bobine qui montre l\'avenir…">'+esc(P.brief||'')+'</textarea>'+
+    '<p class="sub" style="margin-top:12px;font-size:14px;color:var(--ink)"><b>Ce qui va se passer :</b> l\'IA va écrire le synopsis, inventer le casting, découper les scènes et les plans, puis générer toutes les images automatiquement.</p>'+
+    '</div>';
+  html+='<button class="big" id="launch-btn" onclick="act(\'launch\')" '+(P.genre&&P.brief&&P.brief.trim().length>15?'':'disabled')+'>⚡ Lancer la génération automatique →</button>';
+  html+='</div>';
+  return html;
+}
+function pageScript(){
+  var running=P.steps.script==='running';
+  var done=P.steps.script==='done';
+  var html='<div class="box">'+
+    '<div class="lab">ÉTAPE 3 SUR 7</div>'+
+    '<h2>Le <b>synopsis</b></h2>';
+  if(running){
+    html+='<p class="sub">✍️ L\'IA écrit votre synopsis en direct…</p>';
+    html+='<div class="act" id="act-panel"></div>';
+    html+='<button class="big" disabled>✍️ Écriture en cours…</button>';
+  } else if(done){
+    html+='<p class="sub">Voici votre synopsis final. Vous pouvez le modifier directement.</p>';
+    html+='<div class="act" id="act-panel"></div>';
+    html+='<label style="display:block;margin:10px 0"><div class="lab">Titre du film</div><input type="text" data-f="title" data-id="P" value="'+esc(P.title)+'"></label>';
+    html+='<label style="display:block;margin:10px 0"><div class="lab">Synopsis complet</div><textarea data-f="final" data-id="P" rows="10">'+esc(P.final)+'</textarea></label>';
+    html+='<div class="rw" style="margin-top:10px"><button class="sm" onclick="act(\'rescript\')">↺ Recommencer l\'analyse</button></div>';
+    if(P.syn && P.syn.sugg && P.syn.sugg.length){
+      html+='<h3 style="margin-top:20px">Suggestions alternatives (déjà intégrées ou non)</h3>';
+      html+='<div class="grid">';
+      for(var i=0;i<P.syn.sugg.length;i++){
+        html+='<div class="cd"><div class="lab">Suggestion '+(i+1)+'</div><div style="font-size:14px">'+esc(P.syn.sugg[i])+'</div></div>';
+      }
+      html+='</div>';
+    }
+    html+='<button class="big" onclick="act(\'validateScript\')">✓ Passer aux personnages →</button>';
+  } else {
+    html+='<p class="sub">Le synopsis n\'a pas encore été écrit.</p>';
+    html+='<button class="big" onclick="act(\'runScript\')">✍️ Écrire le synopsis maintenant</button>';
+  }
+  html+='</div>';
+  return html;
+}
+function pageChars(){
+  var running=P.steps.chars==='running';
+  var done=P.steps.chars==='done';
+  var total=P.chars.length, doneImg=0;
+  for(var i=0;i<total;i++) if(P.chars[i].img) doneImg++;
+  var html='<div class="box">'+
+    '<div class="lab">ÉTAPE 4 SUR 7</div>'+
+    '<h2>Les <b>personnages</b></h2>'+
+    '<p class="sub">L\'IA a inventé le casting et généré les images. Chaque fiche sert de référence pour tous les plans. Vous pouvez <b>importer une photo</b> ou <b>modifier par prompt</b> chaque image.</p>';
+  if(total){
+    html+='<div class="lab">Progression : '+doneImg+'/'+total+' images prêtes'+(running&&doneImg<total?' · '+(total-doneImg)+' en cours':'')+'</div>';
+  }
+  html+='<div class="act" id="act-panel"></div>';
+  if(P.chars.length){
+    html+='<div class="grid">';
+    for(var j=0;j<P.chars.length;j++) html+=charCardHtml(P.chars[j]);
+    html+='</div>';
+  } else {
+    html+='<p class="empty">Génération du casting…</p>';
+  }
+  if(done){
+    html+='<button class="big" onclick="act(\'validateChars\')">✓ Passer aux scènes →</button>';
+    html+='<div class="rw" style="margin-top:10px"><button class="sm" onclick="act(\'rechars\')">↺ Refaire le casting</button></div>';
+  } else {
+    html+='<button class="big" disabled>🎭 Casting automatique en cours…</button>';
+  }
+  html+='</div>';
+  return html;
+}
+function pageScenes(){
+  var running=P.steps.scenes==='running';
+  var done=P.steps.scenes==='done';
+  var total=P.scenes.length, doneImg=0;
+  for(var i=0;i<total;i++) if(P.scenes[i].img) doneImg++;
+  var html='<div class="box">'+
+    '<div class="lab">ÉTAPE 5 SUR 7</div>'+
+    '<h2>Les <b>scènes</b></h2>'+
+    '<p class="sub">Chaque scène a un décor, une ambiance, des personnages et des dialogues. Les images sont générées automatiquement.</p>';
+  if(total){
+    html+='<div class="lab">Progression : '+doneImg+'/'+total+' images'+(running&&doneImg<total?' · '+(total-doneImg)+' en cours':'')+'</div>';
+  }
+  html+='<div class="act" id="act-panel"></div>';
+  if(P.scenes.length){
+    html+='<div class="grid">';
+    for(var j=0;j<P.scenes.length;j++) html+=sceneCardHtml(P.scenes[j],j);
+    html+='</div>';
+  } else {
+    html+='<p class="empty">Écriture des scènes…</p>';
+  }
+  if(done){
+    html+='<button class="big" onclick="act(\'validateScenes\')">✓ Passer aux plans →</button>';
+    html+='<div class="rw" style="margin-top:10px"><button class="sm" onclick="act(\'rescenes\')">↺ Refaire les scènes</button></div>';
+  } else {
+    html+='<button class="big" disabled>🎬 Découpage automatique en cours…</button>';
+  }
+  html+='</div>';
+  return html;
+}
+function pageShots(){
+  var running=P.steps.shots==='running';
+  var done=P.steps.shots==='done';
+  var all=shots(), doneImg=0;
+  for(var i=0;i<all.length;i++) if(all[i].h.img) doneImg++;
+  var html='<div class="box">'+
+    '<div class="lab">ÉTAPE 6 SUR 7</div>'+
+    '<h2>Les <b>plans</b></h2>'+
+    '<p class="sub">Chaque scène est découpée en 3-5 plans. Chaque plan deviendra une vidéo.</p>';
+  if(all.length){
+    html+='<div class="lab">Progression : '+doneImg+'/'+all.length+' images de plans'+(running&&doneImg<all.length?' · '+(all.length-doneImg)+' en cours':'')+'</div>';
+  }
+  html+='<div class="act" id="act-panel"></div>';
+  for(var s=0;s<P.scenes.length;s++){
+    var sc=P.scenes[s];
+    html+='<h3>Scène '+(s+1)+' — '+esc(sc.title)+'</h3>';
+    if(sc.shots && sc.shots.length){
+      html+='<div class="grid">';
+      for(var k=0;k<sc.shots.length;k++) html+=shotCardHtml(sc.shots[k]);
+      html+='</div>';
+    } else {
+      html+='<p class="empty">Découpage en cours…</p>';
+    }
+  }
+  if(done){
+    html+='<button class="big" onclick="act(\'validateShots\')">🎬 Passer à la production vidéo →</button>';
+    html+='<div class="rw" style="margin-top:10px"><button class="sm" onclick="act(\'reshots\')">↺ Refaire les plans</button></div>';
+  } else {
+    html+='<button class="big" disabled>🎞️ Découpage automatique en cours…</button>';
+  }
+  html+='</div>';
+  return html;
+}
+function pageProd(){
+  var all=shots(), done=0;
+  for(var i=0;i<all.length;i++) if(all[i].h.video) done++;
+  var html='<div class="box">'+
+    '<div class="lab">ÉTAPE 7 SUR 7</div>'+
+    '<h2><b>Production</b> vidéo</h2>'+
+    '<p class="sub">La file d\'attente Agnès est souvent saturée. Si elle est pleine, l\'app se met en pause automatique et reteste à 3, 6, 12, 24… minutes. Gardez l\'onglet ouvert.</p>'+
+    '<div class="act" id="act-panel"></div>'+
+    '<div class="box" id="qp" style="background:#f9fbfd"><div class="lab">État de la file</div><div id="qstate">Prête</div></div>'+
+    '<div class="rw" style="margin-top:12px">'+
+    '<button class="sm" onclick="act(\'qpause\')">⏸ Pause</button>'+
+    '<button class="sm" onclick="act(\'qnow\')">⚡ Tester maintenant</button>'+
+    '<button class="sm" onclick="act(\'play\')">🎬 Voir le film</button>'+
+    '<button class="sm" onclick="act(\'export\')">📦 Exporter</button>'+
+    '</div>'+
+    '<div class="lab" style="margin-top:16px">Progression : '+done+'/'+all.length+' vidéos prêtes</div>'+
+    '<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-top:10px">';
+  for(var j=0;j<all.length;j++){
+    var h=all[j].h;
+    html+='<div class="tl" style="border:1px solid var(--ln);background:#fff">';
+    html+='<div class="th" style="position:relative;aspect-ratio:'+aspectRatio()+';background:#e8eef6;overflow:hidden">';
+    if(h.video) html+='<video src="'+esc(h.video)+'" controls playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>';
+    else if(h.img) html+='<img src="'+esc(imgRef(h.img))+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">';
+    html+='<b style="position:absolute;top:4px;left:4px;background:var(--ink);color:#fff;padding:1px 5px;font:10px var(--m);z-index:2">'+(j+1)+'</b>';
+    html+='</div>';
+    html+='<div style="padding:6px 8px;font-size:13px">'+esc(h.line||h.action||'')+'</div>';
+    html+='<div style="padding:0 8px 8px;font:10px var(--m);color:var(--dim)">'+(h.vst==='ok'?'prête':h.vst==='run'?'en cours':'en attente')+(h.msg?' · '+esc(h.msg):'')+(h.err?' · '+esc(h.err):'')+'</div>';
+    if(h.vst==='er') html+='<div style="padding:0 8px 8px"><button class="sm" onclick="act(\'retry\',\''+h.id+'\')">Relancer</button></div>';
+    html+='</div>';
+  }
+  html+='</div>';
+  html+='<button class="big" onclick="act(\'qstart\')">▶ Lancer les vidéos →</button>';
+  html+='<div class="rw" style="margin-top:10px"><button class="sm" onclick="act(\'go\',\'shots\')">← Retour aux plans</button></div>';
+  html+='</div>';
+  return html;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════════════════════ */
+function go(page){
+  PAGE=page;
+  render();
+  window.scrollTo(0,0);
+}
+function pageIndex(page){
+  for(var i=0;i<PAGES.length;i++) if(PAGES[i]===page) return i;
+  return 0;
+}
+function maxReached(){
+  if(!KEYS.list.length) return 0;
+  if(!P.genre || !P.brief || P.brief.trim().length<15) return 1;
+  if(P.steps.script!=='done') return 2;
+  if(P.steps.chars!=='done') return 3;
+  if(P.steps.scenes!=='done') return 4;
+  if(P.steps.shots!=='done') return 5;
+  return 6;
+}
+function renderSteps(){
+  var cur=pageIndex(PAGE), mx=maxReached();
+  var html='';
+  for(var i=0;i<STEPS.length;i++){
+    var active=i===cur, reachable=i<=mx;
+    var cls='st';
+    if(active) cls+=' on';
+    else if(reachable) cls+=' ok';
+    var onclick = (reachable&&!active) ? ' onclick="go(\''+PAGES[i]+'\')"' : '';
+    html+='<span class="'+cls+'"'+onclick+'>'+(i+1)+'. '+STEPS[i]+'</span>';
+  }
+  document.getElementById('steps').innerHTML=html;
+}
+function render(){
+  try{
+    renderSteps();
+    var html='';
+    if(PAGE==='keys') html=pageKeys();
+    else if(PAGE==='brief') html=pageBrief();
+    else if(PAGE==='script') html=pageScript();
+    else if(PAGE==='chars') html=pageChars();
+    else if(PAGE==='scenes') html=pageScenes();
+    else if(PAGE==='shots') html=pageShots();
+    else if(PAGE==='prod') html=pageProd();
+    else html=pageKeys();
+    document.getElementById('main').innerHTML=html;
+    renderAct();
+    save();
+  }catch(e){
+    document.getElementById('main').innerHTML='<div class="box"><div class="err-box">ERREUR DE RENDU : '+esc(e.message)+'\n\n'+esc(e.stack||'')+'</div></div>';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ACTIONS (boutons)
+   ═══════════════════════════════════════════════════════════════════ */
+function pickGenre(name,style){
+  P.genre={name:name,style:style};
+  save(); render();
+}
+function pickRatio(r){
+  P.ratio=r;
+  save(); render();
+}
+function actUpload(event,id){
+  var f=event.target.files[0];
+  if(!f) return;
+  var item=findItem(id);
+  if(!item) return;
+  fileToImage(f,1024).then(function(im){
+    if(!im){ toast('Image illisible'); return; }
+    item.o.img=im;
+    item.o.busy=true;
+    refreshCard(id);
+    // Si c'est un personnage, on peut analyser la photo
+    if(item.t==='c'){
+      act('📷 Analyse de la photo…');
+      var sys='Directeur de casting.';
+      var usr='Décris cette personne. {"desc":"English physical description","outfit":"English clothing"}';
+      return aiJson(sys,usr,500,0.2,[imgRef(im)]).then(function(j){
+        if(j.desc) item.o.desc=String(j.desc);
+        if(j.outfit) item.o.outfit=String(j.outfit);
+        act('✓ Descriptif extrait','ok');
+      }).catch(function(e){
+        act('Analyse photo impossible : '+e.message,'wr');
+      }).then(function(){
+        item.o.busy=false;
+        refreshCard(id);
+        save();
+      });
+    }
+    item.o.busy=false;
+    refreshCard(id);
+    save();
+    toast('✓ Image importée. Vous pouvez la modifier par prompt.');
+  });
+}
+function actMod(id){
+  var input=document.getElementById('mod-'+id);
+  if(!input || !input.value.trim()){ toast('Décrivez la modification'); return; }
+  var p=input.value.trim();
+  input.value='';
+  genImage(id,p);
+}
+
+function act(action,id){
+  if(action==='savekeys'){
+    var raw=(document.getElementById('keys')||{}).value||'';
+    var arr=raw.split(/[\s,;]+/);
+    var uniq=[];
+    var seen={};
+    for(var i=0;i<arr.length;i++){
+      var k=arr[i].trim();
+      if(k.length>=8 && !seen[k]){ seen[k]=1; uniq.push(k); }
+    }
+    if(!uniq.length){ toast('Collez au moins une clé API (format sk-…)'); return; }
+    KEYS.plan=document.getElementById('plan').value;
+    KEYS.list=[];
+    for(var j=0;j<uniq.length;j++){
+      var existing=null;
+      for(var m=0;m<KEYS.list.length;m++) if(KEYS.list[m].k===uniq[j]) existing=KEYS.list[m];
+      // garde les anciens états
+      var old=null;
+      for(var n=0;n<KEYS.list.length;n++) if(KEYS.list[n].k===uniq[j]) old=KEYS.list[n];
+      KEYS.list.push(old||{k:uniq[j],img:0,vid:0,txt:0,cool:0,bad:0,off:false});
+    }
+    // Actually rebuild from scratch preserving old
+    var oldList=KEYS.list;
+    // Wait, we overwrote KEYS.list. Let's redo.
+    var savedState={};
+    for(var x=0;x<oldList.length;x++) savedState[oldList[x].k]=oldList[x];
+    var newList=[];
+    for(var y=0;y<uniq.length;y++){
+      newList.push(savedState[uniq[y]] || {k:uniq[y],img:0,vid:0,txt:0,cool:0,bad:0,off:false});
+    }
+    KEYS.list=newList;
+    dbPut('config',{key:'keys',list:uniq,plan:KEYS.plan});
+    toast('✓ '+uniq.length+' clé(s) enregistrée(s)');
+    go('brief');
+    return;
+  }
+
+  if(action==='launch'){
+    var btn=document.getElementById('launch-btn');
+    if(btn){ btn.disabled=true; btn.textContent='⚡ Lancement…'; }
+    launchAll();
+    return;
+  }
+
+  if(action==='runScript'){ runScript().catch(function(){}); return; }
+  if(action==='validateScript'){
+    if(!P.final){ toast('Synopsis manquant'); return; }
+    go('chars');
+    if(P.steps.chars==='idle') runChars().catch(function(){});
+    return;
+  }
+  if(action==='rescript'){
+    if(!confirm('Refaire le synopsis ? Le texte actuel sera perdu.')) return;
+    P.steps.script='idle';
+    P.syn=null;
+    P.final='';
+    save();
+    go('brief');
+    return;
+  }
+  if(action==='rechars'){
+    if(!confirm('Refaire tout le casting ? Les personnages seront supprimés.')) return;
+    P.chars=[];
+    P.steps.chars='idle';
+    save(); render();
+    runChars().catch(function(){});
+    return;
+  }
+  if(action==='validateChars'){
+    go('scenes');
+    if(P.steps.scenes==='idle') runScenes().catch(function(){});
+    return;
+  }
+  if(action==='rescenes'){
+    if(!confirm('Refaire les scènes ? Elles seront supprimées.')) return;
+    P.scenes=[];
+    P.steps.scenes='idle';
+    P.steps.shots='idle';
+    save(); render();
+    runScenes().catch(function(){});
+    return;
+  }
+  if(action==='validateScenes'){
+    go('shots');
+    if(P.steps.shots==='idle') runShots().catch(function(){});
+    return;
+  }
+  if(action==='reshots'){
+    if(!confirm('Refaire les plans ? Ils seront supprimés.')) return;
+    for(var s=0;s<P.scenes.length;s++) P.scenes[s].shots=[];
+    P.steps.shots='idle';
+    save(); render();
+    runShots().catch(function(){});
+    return;
+  }
+  if(action==='validateShots'){
+    go('prod');
+    return;
+  }
+
+  if(action==='gen'){ genImage(id); return; }
+  if(action==='del'){
+    if(!confirm('Supprimer ?')) return;
+    var f=findItem(id);
+    if(!f) return;
+    if(f.t==='c'){
+      var arr=[];
+      for(var i=0;i<P.chars.length;i++) if(P.chars[i].id!==id) arr.push(P.chars[i]);
+      P.chars=arr;
+    } else if(f.t==='s'){
+      var arr2=[];
+      for(var j=0;j<P.scenes.length;j++) if(P.scenes[j].id!==id) arr2.push(P.scenes[j]);
+      P.scenes=arr2;
+    } else {
+      var arr3=[];
+      var sh=f.s.shots||[];
+      for(var k=0;k<sh.length;k++) if(sh[k].id!==id) arr3.push(sh[k]);
+      f.s.shots=arr3;
+    }
+    save(); render();
+    return;
+  }
+
+  if(action==='qstart'){
+    var anyImg=false;
+    var all=shots();
+    for(var x=0;x<all.length;x++) if(all[x].h.img) anyImg=true;
+    if(!anyImg){ toast('Générez d\'abord des images de plans'); return; }
+    Q.on=true;
+    if(Q.st==='paused'||Q.st==='idle') Q.st='run';
+    Q.next=Q.st==='full'?Q.next:0;
+    save();
+    act('▶ Production vidéo lancée','ok');
+    return;
+  }
+  if(action==='qpause'){
+    Q.on=false; Q.st='paused'; save();
+    act('⏸ Production en pause','wr');
+    return;
+  }
+  if(action==='qnow'){
+    Q.on=true; Q.next=0;
+    if(Q.st==='paused') Q.st='run';
+    save();
+    act('⚡ Test manuel','in');
+    return;
+  }
+  if(action==='retry'){
+    var f2=findItem(id);
+    if(f2){ f2.o.vst='wait'; f2.o.err=''; refreshCard(id); }
+    Q.on=true;
+    if(Q.st==='paused') Q.st='run';
+    save();
+    return;
+  }
+  if(action==='play'){ playFilm(); return; }
+  if(action==='export'){
+    var blob=new Blob([JSON.stringify(P)],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download=(P.title||'film')+'.json';
+    a.click();
+    return;
+  }
+  if(action==='go'){
+    go(id);
+    return;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   INPUT GLOBAL (champs data-f)
+   ═══════════════════════════════════════════════════════════════════ */
+document.addEventListener('input',function(e){
+  var t=e.target;
+  if(!P) return;
+  if(t.id==='brief'){
+    P.brief=t.value;
+    save();
+    var btn=document.getElementById('launch-btn');
+    if(btn) btn.disabled=!(P.genre && P.brief && P.brief.trim().length>15);
+    return;
+  }
+  if(!t.dataset || !t.dataset.f) return;
+  var o=t.dataset.id==='P' ? P : (findItem(t.dataset.id)||{}).o;
+  if(!o) return;
+  if(t.dataset.arr){
+    var parts=t.value.split(',');
+    var arr=[];
+    for(var i=0;i<parts.length;i++){
+      var v=parts[i].trim();
+      if(v) arr.push(v);
+    }
+    o[t.dataset.f]=arr;
+  } else {
+    o[t.dataset.f]=t.value;
+  }
+  save();
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════════════ */
+function initRender(){
+  // 1er rendu immédiat avec les valeurs par défaut
+  PAGE='keys';
+  render();
+}
+function afterLoad(){
+  // Après chargement des préférences, on détermine la vraie page de départ
+  if(!KEYS.list.length) PAGE='keys';
+  else if(!P.genre || !P.brief || P.brief.trim().length<15) PAGE='brief';
+  else if(P.steps.script!=='done') PAGE='script';
+  else if(P.steps.chars!=='done') PAGE='chars';
+  else if(P.steps.scenes!=='done') PAGE='scenes';
+  else if(P.steps.shots!=='done') PAGE='shots';
+  else PAGE='prod';
+  render();
+}
+function boot(){
+  initRender();
+  // Charge les préférences en arrière-plan
+  var openPromise = Promise.resolve();
+  try {
+    openPromise = openDB().then(function(handle){ db=handle; }).catch(function(){ db=null; });
+  } catch(e){
+    db=null;
+  }
+  openPromise.then(function(){
+    return dbGet('config','keys');
+  }).then(function(k){
+    if(k && k.list && k.list.length){
+      KEYS.plan=k.plan||'free';
+      var arr=[];
+      for(var i=0;i<k.list.length;i++) arr.push({k:k.list[i],img:0,vid:0,txt:0,cool:0,bad:0,off:false});
+      KEYS.list=arr;
+    }
+    return dbGet('config','last');
+  }).then(function(last){
+    if(last && last.v){
+      return dbGet('sessions',last.v);
+    }
+    return null;
+  }).then(function(sess){
+    setProject(sess||newProject());
+    afterLoad();
+    // Reprise des vidéos en cours
+    var all=shots();
+    for(var i=0;i<all.length;i++){
+      var h=all[i].h;
+      if(h.vst==='run' && h.task){
+        var ok=false;
+        for(var j=0;j<KEYS.list.length;j++) if(KEYS.list[j].k===h.task.k) ok=true;
+        if(ok) pollVideo(h); else h.vst='wait';
+      }
+    }
+    act('Bienvenue dans Ciné-Genesis. Suivez les étapes une par une — un gros bouton bleu à chaque étape déclenche automatiquement la suite.','ok');
+  }).catch(function(e){
+    // En cas d'erreur : projet neuf
+    setProject(newProject());
+    afterLoad();
+    act('Stockage indisponible : '+e.message,'wr');
+  });
+}
+
+// Démarre !
+boot();
+</script>
+</body>
+</html>
